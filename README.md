@@ -1,6 +1,6 @@
 # Lee-et-al-2023
 
-[![DOI](https://zenodo.org/badge/10062483.svg)](https://zenodo.org/badge/latestdoi/10062483)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10062483.svg)](https://doi.org/10.5281/zenodo.10062483)
 
 Source codes for the reproduction of major findings of
 
