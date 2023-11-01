@@ -4,7 +4,7 @@ Source codes for the reproduction of major findings of
 
 **RB is a cell cycle-regulated repressor of cohesin-dependent loop formation**
 
-Authors: Hanjun Lee1,2,3†, Ioanna-Maria Gkotinakou1†, Badri Krishnan3,4, Michael S. Lawrence1,2*, Ioannis Sanidas1*‡
+Authors: Hanjun Lee†, Ioanna-Maria Gkotinakou†, Badri Krishnan, Michael S. Lawrence*, Ioannis Sanidas*‡
 
 †These authors contributed equally to this work.
 
