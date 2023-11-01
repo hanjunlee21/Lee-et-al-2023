@@ -1,0 +1,79 @@
+---
+title: "RB"
+author: "Hanjun Lee"
+date: "1/25/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## DESeq2
+
+```{r}
+library(tximportData)
+library(tximport)
+library(readr)
+library(DESeq2)
+```
+
+```{r}
+files <- c("../Processed/RNA-seq/RSEM/A1.genes.results","../Processed/RNA-seq/RSEM/A2.genes.results","../Processed/RNA-seq/RSEM/A3.genes.results","../Processed/RNA-seq/RSEM/B1.genes.results","../Processed/RNA-seq/RSEM/B2.genes.results","../Processed/RNA-seq/RSEM/B3.genes.results","../Processed/RNA-seq/RSEM/C1.genes.results","../Processed/RNA-seq/RSEM/C2.genes.results","../Processed/RNA-seq/RSEM/C3.genes.results","../Processed/RNA-seq/RSEM/D1.genes.results","../Processed/RNA-seq/RSEM/D2.genes.results","../Processed/RNA-seq/RSEM/D3.genes.results")
+names(files) <- paste0("sample", 1:12)
+```
+# WTCI vs KOCI
+
+```{r}
+txi <- tximport(files[cbind(1:3,4:6)], type = "rsem", txIn = FALSE, txOut = FALSE)
+cond = c("WTCI","WTCI","WTCI","KOCI","KOCI","KOCI")
+sampleTable <- data.frame(condition = factor(cond))
+rownames(sampleTable) <- colnames(txi$counts)
+txi$length[txi$length <= 0] <- 1
+dds <- DESeqDataSetFromTximport(txi, sampleTable, ~condition)
+dds <- DESeq(dds)
+res <- results(dds)
+write.csv(as.data.frame(res), file=paste0("../Processed/RNA-seq/DESeq2/",cond[1],"_vs_",cond[4],".csv"))
+```
+
+# WTCIR vs KOCIR
+
+```{r}
+txi <- tximport(files[cbind(7:9,10:12)], type = "rsem", txIn = FALSE, txOut = FALSE)
+cond = c("WTCIR","WTCIR","WTCIR","KOCIR","KOCIR","KOCIR")
+sampleTable <- data.frame(condition = factor(cond))
+rownames(sampleTable) <- colnames(txi$counts)
+txi$length[txi$length <= 0] <- 1
+dds <- DESeqDataSetFromTximport(txi, sampleTable, ~condition)
+dds <- DESeq(dds)
+res <- results(dds)
+write.csv(as.data.frame(res), file=paste0("../Processed/RNA-seq/DESeq2/",cond[1],"_vs_",cond[4],".csv"))
+```
+
+# WTCI vs WTCIR
+
+```{r}
+txi <- tximport(files[cbind(1:3,7:9)], type = "rsem", txIn = FALSE, txOut = FALSE)
+cond = c("WTCI","WTCI","WTCI","WTCIR","WTCIR","WTCIR")
+sampleTable <- data.frame(condition = factor(cond))
+rownames(sampleTable) <- colnames(txi$counts)
+txi$length[txi$length <= 0] <- 1
+dds <- DESeqDataSetFromTximport(txi, sampleTable, ~condition)
+dds <- DESeq(dds)
+res <- results(dds)
+write.csv(as.data.frame(res), file=paste0("../Processed/RNA-seq/DESeq2/",cond[1],"_vs_",cond[4],".csv"))
+```
+
+# KOCI vs KOCIR
+
+```{r}
+txi <- tximport(files[cbind(4:6,10:12)], type = "rsem", txIn = FALSE, txOut = FALSE)
+cond = c("KOCI","KOCI","KOCI","KOCIR","KOCIR","KOCIR")
+sampleTable <- data.frame(condition = factor(cond))
+rownames(sampleTable) <- colnames(txi$counts)
+txi$length[txi$length <= 0] <- 1
+dds <- DESeqDataSetFromTximport(txi, sampleTable, ~condition)
+dds <- DESeq(dds)
+res <- results(dds)
+write.csv(as.data.frame(res), file=paste0("../Processed/RNA-seq/DESeq2/",cond[1],"_vs_",cond[4],".csv"))
+```
