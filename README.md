@@ -1,5 +1,7 @@
 # Lee-et-al-2023
 
+[![DOI](https://zenodo.org/badge/10062483.svg)](https://zenodo.org/badge/latestdoi/10062483)
+
 Source codes for the reproduction of major findings of
 
 ````
