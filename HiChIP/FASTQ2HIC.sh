@@ -27,7 +27,7 @@ done
 
 juicer() {
 printf "jucier ${1}\n"
-java -Xmx48000m -Djava.awt.headless=true -jar ${HOME}/juicer/juicer_tools_1.22.01.jar pre --threads 8 ${bam}/${1}.valid.pairs ${hic}/${1}.hic ${GENOME}/hg38.chromosomal.XYM.genome
+java -Xmx48000m -Djava.awt.headless=true -jar ${HOME}/juicer/juicer_tools_1.22.01.jar pre --threads 8 ${bam}/${1}.pairs ${hic}/${1}.hic ${GENOME}/hg38.chromosomal.XYM.genome
 }
 
 mkdir -p ${hic}
