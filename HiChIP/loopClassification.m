@@ -1,63 +1,71 @@
 clear all;
 
-cases = ["EE"; "EP"; "PP"];
+loop = readmatrix("../bed/Merged.loops.Q0.01.bedpe", 'Delimiter', '\t', 'FileType', 'text', 'OutputType', 'string');
+promoter = readmatrix("../bed/H3K27ac.Promoter.bed", 'Delimiter', '\t', 'FileType', 'text', 'OutputType', 'string');
+enhancer = readmatrix("../bed/H3K27ac.Enhancer.bed", 'Delimiter', '\t', 'FileType', 'text', 'OutputType', 'string');
 
-opts = delimitedTextImportOptions("NumVariables", 8);
+PP = [];
+EP = [];
+EE = [];
 
-% Specify range and delimiter
-opts.DataLines = [1, Inf];
-opts.Delimiter = " ";
+for idx = 1:size(loop,1)
+    chr = loop(idx,1);
+    pos1 = str2double(loop(idx,2:3));
+    pos2 = str2double(loop(idx,5:6));
 
-% Specify column names and types
-opts.VariableNames = ["VarName1", "VarName2", "Var3", "Var4", "Var5", "Var6", "Var7", "Var8"];
-opts.SelectedVariableNames = ["VarName1", "VarName2"];
-opts.VariableTypes = ["string", "string", "string", "string", "string", "string", "string", "string"];
+    promoter_pos = str2double(promoter(strcmpi(promoter(:,1),chr), 2:3));
+    enhancer_pos = str2double(enhancer(strcmpi(enhancer(:,1),chr), 2:3));
+    
+    promoter_mid = mean(promoter_pos, 2);
+    enhancer_mid = mean(enhancer_pos, 2);
+    
+    promoter1 = promoter((promoter_mid - pos1(1,1)).*(promoter_mid - pos1(1,2)) < 0, 1:3);
+    promoter2 = promoter((promoter_mid - pos2(1,1)).*(promoter_mid - pos2(1,2)) < 0, 1:3);
+    enhancer1 = enhancer((enhancer_mid - pos1(1,1)).*(enhancer_mid - pos1(1,2)) < 0, 1:3);
+    enhancer2 = enhancer((enhancer_mid - pos2(1,1)).*(enhancer_mid - pos2(1,2)) < 0, 1:3);
+    
+    N_PP = size(promoter1,1) * size(promoter2,1);
+    N_EP = size(promoter1,1) * size(enhancer2,1) + size(enhancer1,1) * size(promoter2,1);
+    N_EE = size(enhancer1,1) * size(enhancer2,1);
+    
+    N_max = max([N_PP;N_EP;N_EE]);
 
-% Specify file level properties
-opts.ExtraColumnsRule = "ignore";
-opts.EmptyLineRule = "read";
-opts.LeadingDelimitersRule = "ignore";
-
-% Specify variable properties
-opts = setvaropts(opts, ["VarName1", "VarName2", "Var3", "Var4", "Var5", "Var6", "Var7", "Var8"], "WhitespaceRule", "preserve");
-opts = setvaropts(opts, ["VarName1", "VarName2", "Var3", "Var4", "Var5", "Var6", "Var7", "Var8"], "EmptyFieldRule", "auto");
-
-EE = readmatrix(strcat("Merged.loops.Q0.01.",cases(1,1),".count"),opts);
-EP = readmatrix(strcat("Merged.loops.Q0.01.",cases(2,1),".count"),opts);
-PP = readmatrix(strcat("Merged.loops.Q0.01.",cases(3,1),".count"),opts);
-
-loops = readmatrix(strcat("Merged.loops.Q0.01.list"),'Delimiter','\t','FileType','text','OutputType','string');
-
-mat = strings(size(loops,1),5);
-mat(:,1) = loops;
-
-for i = 1:size(loops,1)
-    for j = 1:size(cases,1)
-        if j == 1
-            det = EE(strcmp(EE(:,2),loops(i,1)),:);
-        elseif j == 2
-            det = EP(strcmp(EP(:,2),loops(i,1)),:);
-        elseif j == 3
-            det = PP(strcmp(PP(:,2),loops(i,1)),:);
-        end
-
-        if size(det,1) > 0
-            mat(i,j+2) = det(1,1);
-        else
-            mat(i,j+2) = "0";
-        end
+    if N_PP == N_max
+        PP = [PP; loop(idx,:)];
+    end
+    if N_EP == N_max
+        EP = [EP; loop(idx,:)];
+    end
+    if N_EE == N_max
+        EE = [EE; loop(idx,:)];
     end
 
-    tuple = str2double(mat(i,3:5).');
-    if sum(tuple) == 0
-        mat(i,2) = "NA";
-    else
-        [~,idx] = max(tuple);
-        mat(i,2) = cases(idx,1);
-    end
+    % for i = 1:size(promoter1,1)
+    %     for j = 1:size(promoter2,1)
+    %         PP = [PP; promoter1(i,:), promoter2(j,:)];
+    %     end
+    % end
+    % 
+    % for i = 1:size(promoter1,1)
+    %     for j = 1:size(enhancer2,1)
+    %         EP = [EP; enhancer2(j,:), promoter1(i,:)];
+    %     end
+    % end
+    % for i = 1:size(promoter2,1)
+    %     for j = 1:size(enhancer1,1)
+    %         EP = [EP; enhancer1(j,:), promoter2(i,:)];
+    %     end
+    % end
+    % 
+    % for i = 1:size(enhancer1,1)
+    %     for j = 1:size(enhancer2,1)
+    %         EE = [EE; enhancer1(i,:), enhancer2(j,:)];
+    %     end
+    % end
+
+    disp(idx/size(loop,1))
 end
 
-for j = 1:size(cases,1)
-    submat = mat(strcmp(mat(:,2),cases(j,1)),1);
-    writematrix(submat,strcat("Merged.loops.Q0.01.",cases(j,1),".bedpe"),'FileType','text','Delimiter','\t');
-end
+writematrix(PP, "../bed/Merged.loops.Q0.01.PP.bedpe", 'Delimiter', '\t', 'FileType', 'text');
+writematrix(EP, "../bed/Merged.loops.Q0.01.EP.bedpe", 'Delimiter', '\t', 'FileType', 'text');
+writematrix(EE, "../bed/Merged.loops.Q0.01.EE.bedpe", 'Delimiter', '\t', 'FileType', 'text');
