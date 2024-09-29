@@ -5,7 +5,7 @@
 Source codes for the reproduction of major findings of
 
 ````
-RB is a cell cycle-regulated supressor of cohesin-dependent loop formation
+RB regulates non-E2F transcriptional program by promoting cohesin removal from CTCF sites
 
 Authors: Hanjun Lee†, Ioanna-Maria Gkotinakou†, Badri Krishnan, Michael S. Lawrence*, Ioannis Sanidas*‡
 
@@ -15,5 +15,5 @@ Authors: Hanjun Lee†, Ioanna-Maria Gkotinakou†, Badri Krishnan, Michael S. L
 ‡Lead contact: isanidas@mgh.harvard.edu (I.S.)
 ````
 
-This repository is maintained by Hanjun Lee (MIT/Broad/MGH).
+This repository is maintained by Hanjun Lee (HMS).
 Please contact hanjun_lee@fas.harvard.edu (H.L.) for further questions.
